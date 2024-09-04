@@ -45,10 +45,9 @@ def extract_text_from_docx(file):
     return docx2txt.process(file)
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/predict', methods=['POST'])
-@cross_origin(origins="http://localhost:3000")
 def predict():
     data = request.json
     phrase = data['phrase']
@@ -65,7 +64,6 @@ def predict():
     return jsonify(result)
 
 @app.route('/upload', methods=['POST'])
-@cross_origin(origins="http://localhost:3000")
 def upload_file():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
@@ -90,7 +88,5 @@ def upload_file():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0" , debug=True)
 
-if __name__ == '__main__':
-    app.run(debug=True)
