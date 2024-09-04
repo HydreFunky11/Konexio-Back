@@ -5,3 +5,4 @@ spacy
 Unidecode
 docx2txt
 pypdf
+sklearn_crfsuite
