@@ -1,0 +1,7 @@
+Flask
+Flask-CORS
+joblib
+spacy
+Unidecode
+docx2txt
+pypdf
