@@ -51,15 +51,13 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def predict():
     data = request.json
     phrase = data['phrase']
-    
     words = preprocess_phrase(phrase)
+    print(words)
     features = sent2features(words)
     
     predictions = crf.predict([features])[0]
     
     result = {"phrase": phrase, "annotations": [{"mot": word, "annotation": annotation} for word, annotation in zip(words, predictions)]}
-    
-    print(result)
     
     return jsonify(result)
 
@@ -69,23 +67,20 @@ def upload_file():
         return jsonify({"error": "No file part"}), 400
 
     file = request.files['file']
-    try:
-        reader = PdfReader(file)
-        text = ""
+    reader = PdfReader(file)
 
-        for page in reader.pages:
-            text += page.extract_text() + "\n"
+    text = ""
 
-        words = preprocess_phrase(text)
-        features = sent2features(words)
-        predictions = crf.predict([features])[0]
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
     
-        result = {"phrase": text, "annotations": [{"mot": word, "annotation": annotation} for word, annotation in zip(words, predictions)]}
-        
-        return jsonify({result})
+    words = preprocess_phrase(text)
+    features = sent2features(words)
+    predictions = crf.predict([features])[0]
+    
+    result = {"phrase": text, "annotations": [{"mot": word, "annotation": annotation} for word, annotation in zip(words, predictions)]}
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0" , debug=True)
